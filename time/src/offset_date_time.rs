@@ -189,6 +189,15 @@ impl OffsetDateTime {
         self.0.unix_timestamp_nanos()
     }
 
+    /// Get the [`Duration`] between this and the `other` [`OffsetDateTime`].
+    pub const fn duration_until(&self, other: &Self) -> Duration {
+        let nanos = other.unix_timestamp_nanos() - self.unix_timestamp_nanos();
+        let seconds = (nanos / 1_000_000_000) as i64;
+        let nanos = (nanos % 1_000_000_000) as i32;
+
+        Duration::new(seconds, nanos)
+    }
+
     /// Get the [`Date`] in the stored offset.
     ///
     /// ```rust
