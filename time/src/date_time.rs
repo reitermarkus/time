@@ -192,6 +192,12 @@ impl DateTime<offset_kind::Fixed> {
         time: Time::MIDNIGHT,
         offset: UtcOffset::UTC,
     };
+
+    pub const GPS_EPOCH: Self = Self {
+        date: Date::__from_ordinal_date_unchecked(1980, 6),
+        time: Time::MIDNIGHT,
+        offset: UtcOffset::UTC,
+    };
 }
 
 impl<O: MaybeOffset> DateTime<O> {

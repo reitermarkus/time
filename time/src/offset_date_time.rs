@@ -30,14 +30,23 @@ type Inner = DateTime<offset_kind::Fixed>;
 pub struct OffsetDateTime(pub(crate) Inner);
 
 impl OffsetDateTime {
-    /// Midnight, 1 January, 1970 (UTC).
+    /// The start of UNIX time: Midnight, 1 January, 1970 (UTC).
     ///
     /// ```rust
     /// # use time::OffsetDateTime;
     /// # use time_macros::datetime;
-    /// assert_eq!(OffsetDateTime::UNIX_EPOCH, datetime!(1970-01-01 0:00 UTC),);
+    /// assert_eq!(OffsetDateTime::UNIX_EPOCH, datetime!(1970-01-01 00:00 UTC));
     /// ```
     pub const UNIX_EPOCH: Self = Self(Inner::UNIX_EPOCH);
+
+    /// The start of GPS time: Midnight, 6 January, 1980 (UTC).
+    ///
+    /// ```rust
+    /// # use time::OffsetDateTime;
+    /// # use time_macros::datetime;
+    /// assert_eq!(OffsetDateTime::GPS_EPOCH, datetime!(1980-01-06 00:00 UTC));
+    /// ```
+    pub const GPS_EPOCH: Self = Self(Inner::GPS_EPOCH);
 
     // region: now
     /// Create a new `OffsetDateTime` with the current date and time in UTC.
@@ -190,6 +199,14 @@ impl OffsetDateTime {
     }
 
     /// Get the [`Duration`] between this and the `other` [`OffsetDateTime`].
+    ///
+    /// ```rust
+    /// use time::OffsetDateTime;
+    /// assert_eq!(
+    ///   OffsetDateTime::UNIX_EPOCH.duration_until(&OffsetDateTime::GPS_EPOCH),
+    ///   Duration::new(315964800, 0),
+    /// );
+    /// ```
     pub const fn duration_until(&self, other: &Self) -> Duration {
         let nanos = other.unix_timestamp_nanos() - self.unix_timestamp_nanos();
         let seconds = (nanos / 1_000_000_000) as i64;
